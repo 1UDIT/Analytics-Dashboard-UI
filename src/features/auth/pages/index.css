@@ -1,0 +1,96 @@
+/* =========================
+   GLOWING WAVE BACKGROUND
+========================= */
+
+@keyframes driftSlow {
+  0% { transform: translate3d(-6%, -2%, 0); }
+  50% { transform: translate3d(6%, 2%, 0); }
+  100% { transform: translate3d(-6%, -2%, 0); }
+}
+
+@keyframes driftMed {
+  0% { transform: translate3d(5%, 0%, 0); }
+  50% { transform: translate3d(-5%, 2%, 0); }
+  100% { transform: translate3d(5%, 0%, 0); }
+}
+
+@keyframes driftFast {
+  0% { transform: translate3d(0%, 3%, 0); }
+  50% { transform: translate3d(3%, -2%, 0); }
+  100% { transform: translate3d(0%, 3%, 0); }
+}
+
+.parallax-slow { animation: driftSlow 16s ease-in-out infinite; }
+.parallax-med  { animation: driftMed 12s ease-in-out infinite; }
+.parallax-fast { animation: driftFast 9s ease-in-out infinite; }
+
+/* =========================
+   GLOWING WAVE LINES
+========================= */
+
+@keyframes dashMove {
+  to { stroke-dashoffset: -1200; }
+}
+
+.wave-glow {
+  stroke: rgba(255,255,255,0.25);
+  stroke-width: 2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-dasharray: 10 16;
+  animation: dashMove 10s linear infinite;
+  filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
+}
+
+.wave-glow-2 {
+  stroke: rgba(255,255,255,0.15);
+  stroke-width: 2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-dasharray: 6 18;
+  animation: dashMove 14s linear infinite;
+  filter: drop-shadow(0 0 12px rgba(255,255,255,0.25));
+}
+
+/* =========================
+   GLOWING BLOBS
+========================= */
+
+@keyframes blob {
+  0% { transform: translate(-10%, -10%) scale(1); }
+  50% { transform: translate(10%, 5%) scale(1.08); }
+  100% { transform: translate(-10%, -10%) scale(1); }
+}
+
+.glow-blob {
+  animation: blob 14s ease-in-out infinite;
+  filter: blur(38px);
+  opacity: 0.6;
+}
+
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes softPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.animate-floatY {
+  animation: floatY 4s ease-in-out infinite;
+}
+
+.animate-fadeSlideIn {
+  animation: fadeSlideIn 700ms ease-out both;
+}
+
+.animate-softPulse {
+  animation: softPulse 2.4s ease-in-out infinite;
+}
