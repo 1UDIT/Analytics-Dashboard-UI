@@ -1,19 +1,19 @@
-import { RouteObject } from "react-router-dom";
-import ProtectedRoute from "@/Pages/ProtectedRoute/ProtectedRoute";
-import ProtectedLayout from "@/Pages/ProtectedLayout"; // has <Outlet/> + idle logout etc.
+
 // import Dashboard from "@/Pages/Dashboard";
+
+import AppLayout from "@/App";
+import Index from "@/features/Dashboard/page";
+import { type RouteObject } from "react-router-dom";
 
 export const privateRoutes: RouteObject[] = [
   {
-    path: "/app",
+    path: "/",
     element: (
-      <ProtectedRoute>
-        <ProtectedLayout />
-      </ProtectedRoute>
+      <AppLayout />
     ),
     children: [
-      // { index: true, element: <Dashboard /> },
-      // { path: "users", element: <Users /> },
+      { path: "dashboard", element: <Index /> },
+      { path: "users", element: <Index /> },
     ],
   },
 ];

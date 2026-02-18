@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { useEffect, useState, type ReactNode } from "react";
+import { NavLink } from "react-router-dom";
 
 
 const basePath = import.meta.env.BASE_URL;
@@ -21,33 +22,13 @@ const basePath = import.meta.env.BASE_URL;
 const items = [
 
     {
-        title: "Request List",
-        url: "/Request",
+        title: "Dashboard",
+        url: "/dashboard",
     },
     {
-        title: "Archive Utility",
-        url: "/ArchiveUtility",
-    },
-    {
-        title: "Objects",
-        url: "/Objects",
-    },
-    {
-        title: "Storage",
-        url: "/Storage",
-    },
-    {
-        title: "Drive List",
-        url: "/DriveList",
-    },
-    {
-        title: "Rule Processing Status",
-        url: "/RuleProcessing",
-    },
-    {
-        title: "Report",
-        url: "/Reports",
-    },
+        title: "User",
+        url: "/user",
+    }, 
 ]
 
  
@@ -88,7 +69,7 @@ export function DefaultLayout({ children }: AppSidebarProps) {
 
     return (
         <SidebarProvider>
-            <Sidebar className="bg-[#24303f] text-base font-medium">
+            <Sidebar className="text-base font-medium">
                 {/* Logo */}
                 <div className="block m-auto p-auto pt-2">
                     <img
@@ -122,10 +103,10 @@ export function DefaultLayout({ children }: AppSidebarProps) {
                                             className="text-xl"
                                             variant={location.pathname === item.url ? "outline" : "default"}
                                         >
-                                            {/* <NavLink
+                                            <NavLink
                                                 to={item.url} className={"text-white"}>
                                                 <span>{item.title}</span>
-                                            </NavLink> */}
+                                            </NavLink>
 
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
@@ -144,13 +125,13 @@ export function DefaultLayout({ children }: AppSidebarProps) {
 
             {/* Sidebar Inset Content */}
             <SidebarInset className="h-screen flex flex-col overflow-hidden">
-                <header className="flex h-12 shrink-0 items-center gap-2 border-b px-4 bg-[#24303f] w-full">
+                <header className="flex h-12 shrink-0 items-center gap-2 border-b px-4  w-full">
                     {/* Sidebar Trigger */}
                     <SidebarTrigger className="-ml-1" />
                     <Separator orientation="vertical" className="mr-2 h-full bg-[#727272]" />
                 </header>
 
-                <main className="flex-1 flex flex-col bg-[#1a222c] overflow-hidden">{children}</main>
+                <main className="flex-1 flex flex-col   overflow-hidden">{children}</main>
             </SidebarInset>
 
         </SidebarProvider>

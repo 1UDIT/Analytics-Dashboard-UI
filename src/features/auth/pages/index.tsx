@@ -1,6 +1,14 @@
+import { useNavigate } from "react-router-dom";
 import "./index.css";
 
 export default function LoginPage() {
+  const navigate = useNavigate();
+
+  const submit = () => {
+    // Handle form submission logic here 
+    navigate( "/dashboard", { replace: true }); 
+  }
+
   return (
     <div className="min-h-screen w-full bg-slate-200 flex items-center justify-center p-6">
       <div className="w-full max-w-[1400px] bg-white rounded-xl shadow-lg overflow-hidden">
@@ -47,7 +55,7 @@ export default function LoginPage() {
               </div>
 
               {/* Form */}
-              <form className="space-y-4">
+              <form className="space-y-4" onSubmit={(e) => {submit();e.preventDefault();}}>
                 <div>
                   <label className="mb-2 block text-sm font-medium text-slate-700">
                     Email
