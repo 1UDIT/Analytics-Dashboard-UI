@@ -4,7 +4,7 @@ import { SidebarProvider } from "./components/ui/sidebar";
 
 export default function AppLayout() {
   return (
-    <SidebarProvider>
+    <SidebarProvider className=''>
       <DefaultLayout >
         <main>
           <Outlet />

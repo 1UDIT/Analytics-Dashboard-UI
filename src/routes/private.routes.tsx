@@ -3,6 +3,7 @@
 
 import AppLayout from "@/App";
 import Index from "@/features/Dashboard/page";
+import UploadForm from "@/features/Upload-Data/page";
 import { type RouteObject } from "react-router-dom";
 
 export const privateRoutes: RouteObject[] = [
@@ -12,8 +13,9 @@ export const privateRoutes: RouteObject[] = [
       <AppLayout />
     ),
     children: [
+      { path: "uploadData", element: <UploadForm /> },
       { path: "dashboard", element: <Index /> },
-      { path: "users", element: <Index /> },
+      { path: "user", element: <Index /> },
     ],
   },
 ];
