@@ -2,6 +2,7 @@ import KpiCard from "@/components/ui/KpiCard";
 import BarChart from "@/components/ui/BarChart";
 import { Users, DollarSign, ShoppingCart, RotateCcw } from "lucide-react";
 import { useMemo, useState } from "react";
+import PieChart from "@/components/ui/PieChart";
 
 const monthlyData = [
   { Month: "Jan", Revenue: 160000, GrossMargin: 40000 },
@@ -9,8 +10,15 @@ const monthlyData = [
   { Month: "Mar", Revenue: 130000, GrossMargin: 35000 },
 ];
 
+const pieData = [
+  { label: "Marketing", value: 400, color: "#22c55e" },
+  { label: "Sales", value: 300, color: "#3b82f6" },
+  { label: "Development", value: 200, color: "#f59e0b" },
+  { label: "Support", value: 100, color: "#ef4444" },
+];
+
 export default function Index() {
-  const [monthsToShow, setMonthsToShow] = useState<number | "all">(5); 
+  const [monthsToShow, setMonthsToShow] = useState<number | "all">(5);
 
   const visibleData = useMemo(() => {
     if (monthsToShow === "all") return monthlyData;
@@ -18,7 +26,7 @@ export default function Index() {
   }, [monthlyData, monthsToShow]);
 
   return (
-    <div className="max-w max-h-screen p-6">
+    <div className="p-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <KpiCard
           title="Total Customers"
@@ -54,9 +62,19 @@ export default function Index() {
       <div className="my-8">
         <div className="bg-white rounded-2xl shadow-sm p-6 border-slate-400 border-2">
           <h2 className="text-lg font-semibold mb-4">Product Sales</h2>
-          
+
           <div className="h-99">
             <BarChart data={visibleData} setMonthsToShow={setMonthsToShow} monthsToShow={monthsToShow} />
+          </div>
+        </div>
+      </div>
+      <div className="my-8">
+        <div className="flex flex-row gap-6">
+          <div className="bg-white rounded-2xl shadow-sm p-6 border-slate-400 border-2 ">
+            <h2 className="text-lg font-semibold mb-4">Revenue Distribution</h2>
+            <div className="h-70">
+              <PieChart data={pieData} />
+            </div>
           </div>
         </div>
       </div>

@@ -6,9 +6,7 @@ export default function AppLayout() {
   return (
     <SidebarProvider className=''>
       <DefaultLayout >
-        <main>
-          <Outlet />
-        </main>
+        <Outlet />
       </DefaultLayout>
     </SidebarProvider>
   );

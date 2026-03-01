@@ -112,7 +112,7 @@ export function DefaultLayout({ children }: AppSidebarProps) {
             </Sidebar>
 
             {/* Sidebar Inset Content */}
-            <SidebarInset className="h-screen flex flex-col">
+            <SidebarInset className="flex flex-col">
                 <header className="flex h-12 shrink-0 items-center gap-2 border-b px-4  w-full">
                     {/* Sidebar Trigger */}
                     <SidebarTrigger className="ml-1" />
@@ -120,7 +120,7 @@ export function DefaultLayout({ children }: AppSidebarProps) {
                     {name}
                 </header>
 
-                <main className="flex-1 flex flex-col">{children}</main>
+                <div className="flex-1 flex flex-col">{children}</div>
             </SidebarInset>
 
         </SidebarProvider>
