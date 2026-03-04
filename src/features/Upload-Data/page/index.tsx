@@ -1,48 +1,52 @@
-import React, { useState, type ChangeEvent, type DragEvent, } from "react";
+import React, {
+  useState,
+  type ChangeEvent,
+  type DragEvent,
+} from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { uploadFile } from "@/features/Upload-Data/api/upload";
+import { useNavigate } from "react-router-dom";
 
 const UploadForm: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+
+  const uploadMutation = useMutation({
+    mutationFn: uploadFile,
+    onSuccess: (data) => {
+      queryClient.setQueryData(["uploadedData"], data);
+
+      navigate("/dashboard"); // ✅ navigate here
+    },
+  });
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
+    if (e.target.files?.[0]) {
       setFile(e.target.files[0]);
     }
   };
 
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+    if (e.dataTransfer.files?.[0]) {
       setFile(e.dataTransfer.files[0]);
     }
   };
 
-  const handleUpload = async () => {
+  const handleUpload = () => {
     if (!file) {
       alert("Please select a file first.");
       return;
     }
 
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      setLoading(true);
-
-      // Example API call
-      await fetch("http://localhost:8000/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      alert("File uploaded successfully!");
-      setFile(null);
-    } catch (error) {
-      console.error(error);
-      alert("Upload failed.");
-    } finally {
-      setLoading(false);
-    }
+    uploadMutation.mutate(file, {
+      onSuccess: () => {
+        alert("File uploaded successfully!");
+        setFile(null);
+      },
+    });
   };
 
   return (
@@ -79,11 +83,25 @@ const UploadForm: React.FC = () => {
         {/* Upload Button */}
         <button
           onClick={handleUpload}
-          disabled={loading}
+          disabled={uploadMutation.isPending}
           className="mt-6 w-full bg-green-500 text-white py-2 rounded-xl hover:bg-green-600 transition disabled:opacity-50"
         >
-          {loading ? "Uploading..." : "Upload File"}
+          {uploadMutation.isPending ? "Uploading..." : "Upload File"}
         </button>
+
+        {/* Error Message */}
+        {uploadMutation.isError && (
+          <p className="text-red-500 mt-3 text-center">
+            {(uploadMutation.error as Error).message}
+          </p>
+        )}
+
+        {/* Success Message */}
+        {uploadMutation.isSuccess && (
+          <p className="text-green-500 mt-3 text-center">
+            Upload successful ✅
+          </p>
+        )}
       </div>
     </div>
   );

@@ -14,17 +14,12 @@ import {
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { useEffect, useState, type ReactNode } from "react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { LayoutDashboard, Upload, Users } from "lucide-react";
 
 
 
-const items = [
-    {
-        title: "Upload Data",
-        url: "/uploadData",
-        icon: Upload,
-    },
+const items = [ 
     {
         title: "Dashboard",
         url: "/dashboard",
@@ -113,12 +108,15 @@ export function DefaultLayout({ children }: AppSidebarProps) {
 
             {/* Sidebar Inset Content */}
             <SidebarInset className="flex flex-col">
-                <header className="flex h-12 shrink-0 items-center gap-2 border-b px-4  w-full">
+                <header className="flex h-12 shrink-0 items-center justify-between  gap-2 border-b px-4  w-full">
                     {/* Sidebar Trigger */}
-                    <SidebarTrigger className="ml-1" />
-                    <Separator orientation="vertical" className="mr-2 h-full bg-[#727272]" />
-                    {name}
-                </header>
+                    <div className="flex items-center gap-2">
+                        <SidebarTrigger className="ml-1" />
+                        <Separator orientation="vertical" className="mr-2 h-full bg-[#727272]" />
+                        {name}
+                    </div>
+                    <Link to={"/uploadData"} className="text-blue-500 hover:underline">Upload Data</Link>
+                </header> 
 
                 <div className="flex-1 flex flex-col">{children}</div>
             </SidebarInset>
