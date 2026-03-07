@@ -91,7 +91,9 @@ export default function Index() {
           </div>
         </div>
       ) : (
-        <p>No data available</p>
+        <div className="items-center flex justify-center h-full">
+          <h2>No data available</h2>
+        </div>
       )}
     </>
   )

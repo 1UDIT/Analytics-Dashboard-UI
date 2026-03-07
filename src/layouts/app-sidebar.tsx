@@ -29,7 +29,7 @@ const items = [
         title: "user",
         url: "/user",
         icon: Users,
-    },
+    }, 
 ];
 
 

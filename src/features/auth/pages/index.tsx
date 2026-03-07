@@ -1,13 +1,46 @@
 import { useNavigate } from "react-router-dom";
 import "./index.css";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { Auth } from "./Api/upload";
+
+type LoginForm = {
+  userName: string;
+  password: string;
+};
 
 export default function LoginPage() {
   const navigate = useNavigate();
+   const queryClient = useQueryClient();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginForm>();
 
-  const submit = () => {
-    // Handle form submission logic here 
-    navigate( "/dashboard", { replace: true }); 
-  }
+  const uploadMutation = useMutation({
+    mutationFn: Auth,
+    onSuccess: (data) => {
+      queryClient.setQueryData(["uploadedData"], data);
+      navigate("/dashboard"); // ✅ navigate here
+    },
+  });
+
+  const submit = (data: LoginForm) => {
+
+    uploadMutation.mutate(
+      {
+        userName: data.userName,
+        password: data.password,
+      },
+      {
+        onSuccess: () => {
+          alert("File uploaded successfully!"); 
+          navigate("/dashboard");
+        },
+      }
+    );
+  };
 
   return (
     <div className="min-h-screen w-full bg-slate-200 flex items-center justify-center p-6">
@@ -30,7 +63,7 @@ export default function LoginPage() {
               <div className="space-y-3">
                 <button
                   type="button"
-                  className="flex w-full items-center justify-center gap-3 rounded-full border border-slate-200 bg-white py-3 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
+                  className="cursor-not-allowed flex w-full items-center justify-center gap-3 rounded-full border border-slate-200 bg-white py-3 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
                 >
                   <GoogleIcon />
                   Sign in with Google
@@ -38,7 +71,7 @@ export default function LoginPage() {
 
                 <button
                   type="button"
-                  className="flex w-full items-center justify-center gap-3 rounded-full border border-slate-200 bg-white py-3 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
+                  className="cursor-not-allowed flex w-full items-center justify-center gap-3 rounded-full border border-slate-200 bg-white py-3 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
                 >
                   <FacebookIcon />
                   Sign in with Facebook
@@ -49,34 +82,38 @@ export default function LoginPage() {
               <div className="my-6 flex items-center gap-3">
                 <div className="h-px w-full bg-slate-200" />
                 <span className="shrink-0 text-xs text-slate-400">
-                  or Sign in with Email
+                  or Sign in with UserName
                 </span>
                 <div className="h-px w-full bg-slate-200" />
               </div>
 
               {/* Form */}
-              <form className="space-y-4" onSubmit={(e) => {submit();e.preventDefault();}}>
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-slate-700">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="Enter your email"
-                    className="w-full rounded-full border border-slate-200 bg-white px-5 py-3 text-sm text-slate-800 outline-none ring-0 transition focus:border-violet-500 focus:ring-2 focus:ring-violet-200"
-                  />
-                </div>
+              <form className="space-y-4" onSubmit={handleSubmit(submit)}>
+                <input
+                  type="text"
+                  placeholder="Enter your User Name"
+                  {...register("userName", { required: "Username is required" })}
+                  className="w-full rounded-full border border-slate-200 bg-white px-5 py-3 text-sm"
+                />
 
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-slate-700">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    placeholder="Enter your Password"
-                    className="w-full rounded-full border border-slate-200 bg-white px-5 py-3 text-sm text-slate-800 outline-none ring-0 transition focus:border-violet-500 focus:ring-2 focus:ring-violet-200"
-                  />
-                </div>
+                {errors.userName && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.userName.message}
+                  </p>
+                )}
+
+                <input
+                  type="password"
+                  placeholder="Enter your Password"
+                  {...register("password", { required: "Password is required" })}
+                  className="w-full rounded-full border border-slate-200 bg-white px-5 py-3 text-sm"
+                />
+
+                {errors.password && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.password.message}
+                  </p>
+                )}
 
                 <div className="flex items-center justify-end">
                   <button

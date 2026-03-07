@@ -7,6 +7,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { uploadFile } from "@/features/Upload-Data/api/upload";
 import { useNavigate } from "react-router-dom";
 
+
+
 const UploadForm: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const navigate = useNavigate();
@@ -36,18 +38,24 @@ const UploadForm: React.FC = () => {
   };
 
   const handleUpload = () => {
-    if (!file) {
-      alert("Please select a file first.");
-      return;
-    }
+  if (!file) {
+    alert("Please select a file first.");
+    return;
+  }
 
-    uploadMutation.mutate(file, {
+  uploadMutation.mutate(
+    {
+      file: file,
+      userName: "admin",
+    },
+    {
       onSuccess: () => {
         alert("File uploaded successfully!");
         setFile(null);
       },
-    });
-  };
+    }
+  );
+};
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-6">
