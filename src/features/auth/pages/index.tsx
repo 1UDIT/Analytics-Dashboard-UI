@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import "./index.css";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { Auth } from "./Api/upload";
+import { Auth } from "./Api/Auth";
 
 type LoginForm = {
   userName: string;
@@ -21,7 +21,9 @@ export default function LoginPage() {
   const uploadMutation = useMutation({
     mutationFn: Auth,
     onSuccess: (data) => {
-      queryClient.setQueryData(["uploadedData"], data);
+      queryClient.setQueryData(["uploadedData"], data); 
+      sessionStorage.setItem("userName",data.userName)
+      sessionStorage.setItem("role",data.role)
       navigate("/dashboard"); // ✅ navigate here
     },
   });
@@ -34,8 +36,7 @@ export default function LoginPage() {
         password: data.password,
       },
       {
-        onSuccess: () => {
-          alert("File uploaded successfully!"); 
+        onSuccess: () => { 
           navigate("/dashboard");
         },
       }
@@ -93,7 +94,7 @@ export default function LoginPage() {
                   type="text"
                   placeholder="Enter your User Name"
                   {...register("userName", { required: "Username is required" })}
-                  className="w-full rounded-full border border-slate-200 bg-white px-5 py-3 text-sm"
+                  className="w-full rounded-full border border-slate-200  px-5 py-3 text-sm"
                 />
 
                 {errors.userName && (
@@ -106,7 +107,7 @@ export default function LoginPage() {
                   type="password"
                   placeholder="Enter your Password"
                   {...register("password", { required: "Password is required" })}
-                  className="w-full rounded-full border border-slate-200 bg-white px-5 py-3 text-sm"
+                  className="w-full rounded-full border border-slate-200 px-5 py-3 text-sm"
                 />
 
                 {errors.password && (

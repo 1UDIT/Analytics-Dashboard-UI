@@ -13,13 +13,14 @@ import {
     SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { useEffect, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { LayoutDashboard, Upload, Users } from "lucide-react";
+import { ChevronUp, LayoutDashboard, Upload, User2, Users } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useLogout } from "@/hooks/useLogout";
 
 
-
-const items = [ 
+const items = [
     {
         title: "Dashboard",
         url: "/dashboard",
@@ -29,7 +30,7 @@ const items = [
         title: "user",
         url: "/user",
         icon: Users,
-    }, 
+    },
 ];
 
 
@@ -40,6 +41,8 @@ interface AppSidebarProps {
 
 export function DefaultLayout({ children }: AppSidebarProps) {
     const [name, setName] = useState<string>('Dashboard');
+    const logout = useLogout();
+    const userName = sessionStorage.getItem("userName")
 
     useEffect(() => {
         locationName();
@@ -57,6 +60,10 @@ export function DefaultLayout({ children }: AppSidebarProps) {
                 break;
         }
     }
+
+    const signOut = useCallback(() => { 
+        logout();
+    }, [])
 
     return (
         <SidebarProvider>
@@ -100,10 +107,25 @@ export function DefaultLayout({ children }: AppSidebarProps) {
                     </SidebarGroup>
                 </SidebarContent>
                 <SidebarHeader />
+
                 <SidebarFooter>
-                    <SidebarMenu className="text-white">
+                    <SidebarMenu  >
+                        <SidebarMenuItem>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <SidebarMenuButton className="text-md">
+                                        <User2 />  {userName}
+                                        <ChevronUp className="ml-auto" />
+                                    </SidebarMenuButton>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent side="top">
+                                    <DropdownMenuItem onClick={signOut}>Sign out</DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </SidebarMenuItem>
                     </SidebarMenu>
                 </SidebarFooter>
+
             </Sidebar>
 
             {/* Sidebar Inset Content */}
@@ -116,7 +138,7 @@ export function DefaultLayout({ children }: AppSidebarProps) {
                         {name}
                     </div>
                     <Link to={"/uploadData"} className="text-blue-500 hover:underline">Upload Data</Link>
-                </header> 
+                </header>
 
                 <div className="flex-1 flex flex-col">{children}</div>
             </SidebarInset>
