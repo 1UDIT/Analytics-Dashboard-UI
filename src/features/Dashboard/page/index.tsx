@@ -4,6 +4,8 @@ import { Users, DollarSign, ShoppingCart, RotateCcw } from "lucide-react";
 import { useMemo, useState } from "react";
 import PieChart from "@/components/ui/PieChart";
 import { useQuery } from "@tanstack/react-query";
+import FileFolderTree from "@/components/ui/FileFolderTree";
+import { fetchData } from "../api";
 
 const monthlyData = [
   { Month: "Jan", Revenue: 160000, GrossMargin: 40000 },
@@ -18,8 +20,16 @@ const pieData = [
   { label: "Support", value: 100, color: "#ef4444" },
 ];
 
+// const dataFolder = [
+//   { userName: "admin", fileName: "sales.csv" },
+//   { userName: "admin", fileName: "report.xlsx" },
+//   { userName: "john", fileName: "users.csv" },
+// ];
+
 export default function Index() {
   const [monthsToShow, setMonthsToShow] = useState<number | "all">(5);
+  const userName = sessionStorage.getItem("userName")
+  const userRole = sessionStorage.getItem("role")
 
   const { data } = useQuery({
     queryKey: ["uploadedData"],
@@ -27,12 +37,32 @@ export default function Index() {
     enabled: false,
   });
 
-  console.log(data);
+  const handleDelete = (file: any) => {
+    console.log("Delete file:", file);
+  };
+
+  const dataFolder = useQuery({
+    queryKey: ["dataFolder", userName, userRole],
+    queryFn: ({ signal }) =>
+      fetchData(
+        `http://localhost:8000/login/files?username=${userName}&role=${userRole}`,
+        "GET",
+        undefined,
+        signal
+      ),
+    enabled: !!userName && !!userRole,
+    networkMode: "always",
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+
 
   const visibleData = useMemo(() => {
     if (monthsToShow === "all") return monthlyData;
     return monthlyData.slice(-monthsToShow);
   }, [monthlyData, monthsToShow]);
+
+  console.log(dataFolder?.data)
 
   return (
     <>
@@ -91,8 +121,8 @@ export default function Index() {
           </div>
         </div>
       ) : (
-        <div className="items-center flex justify-center h-full">
-          <h2>No data available</h2>
+        <div className="p-10 items-center flex justify-center h-full">
+          {dataFolder?.data?.length >= 1 ? <FileFolderTree data={dataFolder?.data} onDelete={handleDelete} /> : "No data available"}
         </div>
       )}
     </>

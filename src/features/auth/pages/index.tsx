@@ -21,7 +21,7 @@ export default function LoginPage() {
   const uploadMutation = useMutation({
     mutationFn: Auth,
     onSuccess: (data) => {
-      queryClient.setQueryData(["uploadedData"], data); 
+      queryClient.setQueryData(["Auth"], data); 
       sessionStorage.setItem("userName",data.userName)
       sessionStorage.setItem("role",data.role)
       navigate("/dashboard"); // ✅ navigate here

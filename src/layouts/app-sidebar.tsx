@@ -61,7 +61,7 @@ export function DefaultLayout({ children }: AppSidebarProps) {
         }
     }
 
-    const signOut = useCallback(() => { 
+    const signOut = useCallback(() => {
         logout();
     }, [])
 
@@ -137,7 +137,7 @@ export function DefaultLayout({ children }: AppSidebarProps) {
                         <Separator orientation="vertical" className="mr-2 h-full bg-[#727272]" />
                         {name}
                     </div>
-                    <Link to={"/uploadData"} className="text-blue-500 hover:underline">Upload Data</Link>
+                    <Link to={"/uploadData"} className="text-blue-500 hover:underline">Upload CSV</Link>
                 </header>
 
                 <div className="flex-1 flex flex-col">{children}</div>

@@ -1,11 +1,20 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { uploadFile } from "@/features/Upload-Data/api/upload";
+export async function fetchData(
+  url: string,
+  method: string,
+  body?: unknown,
+  signal?: AbortSignal
+) {
+  const res = await fetch(url, {
+    method,
+    headers: { "Content-Type": "application/json" },
+    body: body ? JSON.stringify(body) : undefined,
+    signal,
+  });
 
-const queryClient = useQueryClient();
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || res.statusText);
+  }
 
-export const uploadMutation = useMutation({
-  mutationFn: uploadFile,
-  onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ["uploadedData"] });
-  },
-});
+  return res.json();
+}
