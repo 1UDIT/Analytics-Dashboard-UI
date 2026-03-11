@@ -5,14 +5,11 @@ type Props = {
   role: string;
 };
 
-export default function RoleGuard({ children, role }: Props) {
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+export default function RoleGuard({ children }: Props) {
+  const user = sessionStorage.getItem("role");
+ 
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  if (user.role !== role) {
+  if (user !== "admin") {
     return <Navigate to="/dashboard" replace />;
   }
 

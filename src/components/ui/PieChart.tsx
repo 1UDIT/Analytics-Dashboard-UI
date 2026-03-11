@@ -1,9 +1,8 @@
 import React from "react";
 
 type PieData = {
-  label: string;
-  value: number;
-  color: string;
+  Product: string;
+  Revenue: number;
 };
 
 type PieChartProps = {
@@ -12,7 +11,21 @@ type PieChartProps = {
 };
 
 const PieChart: React.FC<PieChartProps> = ({ data, size = 250 }) => {
-  const total = data.reduce((sum, item) => sum + item.value, 0);
+  const getRandomColor = () => {
+    const letters = "0123456789ABCDEF";
+    let color = "#";
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  };
+
+  const coloredData = data.map((item) => ({
+    ...item,
+    color: getRandomColor(),
+  }));
+
+  const total = coloredData.reduce((sum, item) => sum + item.Revenue, 0);
 
   let cumulativePercent = 0;
 
@@ -29,8 +42,8 @@ const PieChart: React.FC<PieChartProps> = ({ data, size = 250 }) => {
         style={{ width: size, height: size }}
         className="rotate-[-90deg]"
       >
-        {data.map((slice, index) => {
-          const percent = slice.value / total;
+        {coloredData.map((slice, index) => {
+          const percent = slice.Revenue / total;
           const [startX, startY] = getCoordinatesForPercent(cumulativePercent);
           cumulativePercent += percent;
           const [endX, endY] = getCoordinatesForPercent(cumulativePercent);
@@ -56,15 +69,15 @@ const PieChart: React.FC<PieChartProps> = ({ data, size = 250 }) => {
 
       {/* Legend */}
       <div className="space-y-2">
-        {data.map((item, index) => {
-          const percent = ((item.value / total) * 100).toFixed(1);
+        {coloredData.map((item, index) => {
+          const percent = ((item.Revenue / total) * 100).toFixed(1);
           return (
             <div key={index} className="flex items-center gap-3 text-sm">
               <div
                 className="w-4 h-4 rounded-sm"
                 style={{ backgroundColor: item.color }}
               />
-              <span className="font-medium">{item.label}</span>
+              <span className="font-medium">{item.Product}</span>
               <span className="text-gray-500">{percent}%</span>
             </div>
           );

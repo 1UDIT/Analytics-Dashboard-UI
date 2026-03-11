@@ -3,7 +3,6 @@ import React from "react";
 type MonthlyData = {
   Month: string;
   Revenue: number;
-  GrossMargin: number;
 };
 
 type ChartProps = {
@@ -12,15 +11,13 @@ type ChartProps = {
   monthsToShow: number | "all";
 };
 
-const Chart: React.FC<ChartProps> = ({ data, setMonthsToShow,monthsToShow }) => {
+const Chart: React.FC<ChartProps> = ({ data, setMonthsToShow, monthsToShow }) => {
   if (!data || data.length === 0) {
     return <div>No data available</div>;
-  }
-
-  
+  } 
 
   const maxValue = Math.max(
-    ...data.flatMap((d) => [d.Revenue, d.GrossMargin]),
+    ...data.flatMap((d) => [d.Revenue]),
     1
   );
 
@@ -78,33 +75,26 @@ const Chart: React.FC<ChartProps> = ({ data, setMonthsToShow,monthsToShow }) => 
             {/* Bars */}
             <div className="relative flex items-end h-full min-w-[500px]">
               {data.map((item, index) => {
-                const revenueHeight =
-                  (item.Revenue / maxValue) * 100;
-                const marginHeight =
-                  (item.GrossMargin / maxValue) * 100;
+                const revenueHeight = (item.Revenue / maxValue) * 100;
 
                 return (
-                  <div
-                    key={index}
-                    className="flex flex-col items-center flex-1"
-                  >
-                    <div className="flex items-end gap-2 h-full">
+                  <div key={index} className="flex flex-col items-center flex-1">
 
-                      <div className="flex items-end gap-2 h-64">
+                    <div className="flex flex-col items-center justify-end h-64">
 
-                        <div
-                          className="w-6 bg-green-500 rounded"
-                          style={{ height: `${revenueHeight}%` }}
-                        />
+                      {/* Revenue number */}
+                      <span className="text-xs font-semibold mb-1">
+                        {item.Revenue}
+                      </span>
 
-                        <div
-                          className="w-6 bg-blue-500 rounded"
-                          style={{ height: `${marginHeight}%` }}
-                        />
-
-                      </div>
+                      {/* Bar */}
+                      <div
+                        className="w-6 bg-green-500 rounded-t"
+                        style={{ height: `${revenueHeight}%` }}
+                      />
 
                     </div>
+
                   </div>
                 );
               })}
@@ -131,10 +121,6 @@ const Chart: React.FC<ChartProps> = ({ data, setMonthsToShow,monthsToShow }) => 
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 bg-green-500 rounded-sm" />
           Revenue
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-blue-500 rounded-sm" />
-          Gross Margin
         </div>
       </div>
     </div>

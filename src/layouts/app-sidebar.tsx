@@ -15,7 +15,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { ChevronUp, LayoutDashboard, Upload, User2, Users } from "lucide-react";
+import { ChevronUp, LayoutDashboard,  User2, Users } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useLogout } from "@/hooks/useLogout";
 
