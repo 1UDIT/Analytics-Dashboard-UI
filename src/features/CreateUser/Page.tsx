@@ -49,7 +49,7 @@ export default function CreateUser() {
             <input
               {...register("userName", { required: "Username is required" })}
               className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
-              placeholder="Enter username"
+              placeholder="Enter userName"
             />
             {errors.userName && (
               <p className="text-red-500 text-sm">
