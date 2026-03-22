@@ -4,7 +4,8 @@ type UploadPayload = {
 };
 
 export const Auth = async ({ userName, password }: UploadPayload) => {
-  const response = await fetch("http://localhost:8000/login", {
+  const API_URL = import.meta.env.VITE_API_URL;
+  const response = await fetch(`http://${API_URL}/api/v1/auth`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -19,7 +20,7 @@ export const Auth = async ({ userName, password }: UploadPayload) => {
     const error = await response.json();
     throw new Error(error.detail || "Authentication failed");
   }
-  
+
 
   return response.json();
 };

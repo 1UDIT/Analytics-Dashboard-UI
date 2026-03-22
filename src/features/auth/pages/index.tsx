@@ -9,9 +9,10 @@ type LoginForm = {
   password: string;
 };
 
+
 export default function LoginPage() {
   const navigate = useNavigate();
-   const queryClient = useQueryClient();
+  const queryClient = useQueryClient(); 
   const {
     register,
     handleSubmit,
@@ -21,9 +22,9 @@ export default function LoginPage() {
   const uploadMutation = useMutation({
     mutationFn: Auth,
     onSuccess: (data) => {
-      queryClient.setQueryData(["Auth"], data); 
-      sessionStorage.setItem("userName",data.userName)
-      sessionStorage.setItem("role",data.role)
+      queryClient.setQueryData(["Auth"], data);
+      sessionStorage.setItem("userName", data.userName)
+      sessionStorage.setItem("role", data.role)
       navigate("/dashboard"); // ✅ navigate here
     },
   });
@@ -36,7 +37,7 @@ export default function LoginPage() {
         password: data.password,
       },
       {
-        onSuccess: () => { 
+        onSuccess: () => {
           navigate("/dashboard");
         },
       }

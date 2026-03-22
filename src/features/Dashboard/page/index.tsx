@@ -1,51 +1,77 @@
 import KpiCard from "@/components/ui/KpiCard";
 import BarChart from "@/components/ui/BarChart";
 import { Users, DollarSign, ShoppingCart, RotateCcw } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import PieChart from "@/components/ui/PieChart";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import FileFolderTree from "@/components/ui/FileFolderTree";
 import { fetchData } from "../api";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState } from "@/store";
+import { setDataset } from "@/store/slices/datasetSlice";
+import { Alert } from "@/hooks/AlertDialog";
 
-const monthlyData = [
-  { Month: "Jan", Revenue: 160000, GrossMargin: 40000 },
-  { Month: "Feb", Revenue: 29000, GrossMargin: 8000 },
-  { Month: "Mar", Revenue: 130000, GrossMargin: 35000 },
-];
 
-const pieData = [
-  { label: "Marketing", value: 400, color: "#22c55e" },
-  { label: "Sales", value: 300, color: "#3b82f6" },
-  { label: "Development", value: 200, color: "#f59e0b" },
-  { label: "Support", value: 100, color: "#ef4444" },
-];
-
-// const dataFolder = [
-//   { userName: "admin", fileName: "sales.csv" },
-//   { userName: "admin", fileName: "report.xlsx" },
-//   { userName: "john", fileName: "users.csv" },
-// ];
 
 export default function Index() {
   const [monthsToShow, setMonthsToShow] = useState<number | "all">(5);
   const userName = sessionStorage.getItem("userName")
   const userRole = sessionStorage.getItem("role")
+  const queryClient = useQueryClient();
+  const Dispatch = useDispatch();
+  const datasetId = useSelector((state: RootState) => state.dataset.datasetId);
+  const API_URL = import.meta.env.VITE_API_URL;
+  const [open, setOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<any>(null);
+  const [actionType, setActionType] = useState<"open" | "delete" | null>(null);
 
-  const { data } = useQuery({
-    queryKey: ["uploadedData"],
-    queryFn: () => Promise.resolve(null), // won't run if cache exists
-    enabled: false,
+  const { data: dataset } = useQuery({
+    queryKey: ["dataset", datasetId],
+    queryFn: async () => {
+      const res = await fetch(
+        `http://${API_URL}/api/v1/analytics/data/${datasetId}`
+      );
+      return res.json();
+    },
+    enabled: !!datasetId,
   });
 
-  const handleDelete = (file: any) => {
-    console.log("Delete file:", file);
-  };
+  const deleteMutation = useMutation({
+    mutationFn: async ({
+      datasetId,
+      username,
+      role,
+    }: {
+      datasetId: string;
+      username: string;
+      role: string;
+    }) => {
+      const res = await fetch(
+        `http://${API_URL}/api/v1/analytics/delete/${datasetId}?username=${username}&role=${role}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to delete");
+      }
+
+      return res.json();
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["dataFolder"] });
+    },
+  });
+
+
 
   const dataFolder = useQuery({
     queryKey: ["dataFolder", userName, userRole],
     queryFn: ({ signal }) =>
       fetchData(
-        `http://localhost:8000/login/files?username=${userName}&role=${userRole}`,
+        `http://${API_URL}/api/v1/auth/files?username=${userName}&role=${userRole}`,
         "GET",
         undefined,
         signal
@@ -56,17 +82,40 @@ export default function Index() {
     refetchOnWindowFocus: false,
   });
 
+  const onOpen = (file: any) => {
+    setSelectedFile(file);
+    setActionType("open");
+    setOpen(true);
+  };
 
-  const visibleData = useMemo(() => {
-    if (monthsToShow === "all") return monthlyData;
-    return monthlyData.slice(-monthsToShow);
-  }, [monthlyData, monthsToShow]);
+  const handleDelete = (file: any) => {
+    setSelectedFile(file);
+    setActionType("delete");
+    setOpen(true);
+  };
 
-  console.log(dataFolder?.data)
+  const handleConfirm = () => {
+    if (!selectedFile || !actionType) return;
+
+    if (actionType === "open") {
+      sessionStorage.setItem("datasetId", selectedFile._id);
+      Dispatch(setDataset(selectedFile._id));
+    }
+
+    if (actionType === "delete") {
+      deleteMutation.mutate({
+        datasetId: selectedFile._id,
+        username: selectedFile.username,
+        role: selectedFile.role,
+      });
+    }
+
+    setOpen(false);
+  };
 
   return (
     <>
-      {data ? (
+      {dataset ? (
         <div className="p-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <KpiCard
@@ -78,7 +127,7 @@ export default function Index() {
 
             <KpiCard
               title="Total Revenue"
-              value="3,465"
+              value={dataset.total_revenue}
               suffix=" M"
               prefix="$"
               change={0.5}
@@ -87,15 +136,15 @@ export default function Index() {
 
             <KpiCard
               title="Total Orders"
-              value="1,136"
+              value={dataset.total_orders}
               suffix=" M"
               change={-0.2}
               icon={<ShoppingCart size={18} />}
             />
 
             <KpiCard
-              title="Total Returns"
-              value="1,789"
+              title="Total Order"
+              value={dataset.total_orders}
               change={0.12}
               icon={<RotateCcw size={18} />}
             />
@@ -105,7 +154,7 @@ export default function Index() {
               <h2 className="text-lg font-semibold mb-4">Product Sales</h2>
 
               <div className="h-99">
-                <BarChart data={visibleData} setMonthsToShow={setMonthsToShow} monthsToShow={monthsToShow} />
+                <BarChart data={dataset.monthly_sales} setMonthsToShow={setMonthsToShow} monthsToShow={monthsToShow} />
               </div>
             </div>
           </div>
@@ -114,7 +163,7 @@ export default function Index() {
               <div className="bg-white rounded-2xl shadow-sm p-6 border-slate-400 border-2 ">
                 <h2 className="text-lg font-semibold mb-4">Revenue Distribution</h2>
                 <div className="h-70">
-                  <PieChart data={pieData} />
+                  <PieChart data={dataset.top_products} />
                 </div>
               </div>
             </div>
@@ -122,9 +171,24 @@ export default function Index() {
         </div>
       ) : (
         <div className="p-10 items-center flex justify-center h-full">
-          {dataFolder?.data?.length >= 1 ? <FileFolderTree data={dataFolder?.data} onDelete={handleDelete} /> : "No data available"}
+          {dataFolder?.data?.length >= 1 ? <FileFolderTree data={dataFolder?.data} onDelete={handleDelete} onOpen={onOpen} /> : "No data available"}
         </div>
       )}
+
+      <Alert
+        open={open}
+        setOpen={setOpen}
+        handleConfirm={handleConfirm}
+        description={
+          actionType === "delete"
+            ? `Are you sure you want to delete "${selectedFile?.name}"?`
+            : `Open dataset "${selectedFile?.name}"?`
+        }
+        title={
+          actionType === "delete" ? "Delete Dataset" : "Open Dataset"
+        }
+        actionType={actionType}
+      />
     </>
   )
 }

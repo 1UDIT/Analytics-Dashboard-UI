@@ -13,6 +13,8 @@ const UploadForm: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const userName = sessionStorage.getItem("userName") || "";
+  const role = sessionStorage.getItem("role") || "";
 
 
   const uploadMutation = useMutation({
@@ -38,24 +40,25 @@ const UploadForm: React.FC = () => {
   };
 
   const handleUpload = () => {
-  if (!file) {
-    alert("Please select a file first.");
-    return;
-  }
-
-  uploadMutation.mutate(
-    {
-      file: file,
-      userName: "admin",
-    },
-    {
-      onSuccess: () => {
-        alert("File uploaded successfully!");
-        setFile(null);
-      },
+    if (!file) {
+      alert("Please select a file first.");
+      return;
     }
-  );
-};
+
+    uploadMutation.mutate(
+      {
+        file: file,
+        userName: userName,
+        role: role
+      },
+      {
+        onSuccess: () => {
+          alert("File uploaded successfully!");
+          setFile(null);
+        },
+      }
+    );
+  };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-6">

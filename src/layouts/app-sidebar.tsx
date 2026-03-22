@@ -15,9 +15,14 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { ChevronUp, LayoutDashboard, Upload, User2, Users } from "lucide-react";
+import { ChevronUp, LayoutDashboard, User2, Users } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useLogout } from "@/hooks/useLogout";
+import { Button } from "@/components/ui/button";
+import { useLocation } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState } from "@/store";
+import { clearDataset } from "@/store/slices/datasetSlice";
 
 
 const items = [
@@ -43,16 +48,20 @@ export function DefaultLayout({ children }: AppSidebarProps) {
     const [name, setName] = useState<string>('Dashboard');
     const logout = useLogout();
     const userName = sessionStorage.getItem("userName")
+    const location = useLocation();
+    const datasetId = useSelector((state: RootState) => state.dataset.datasetId);
+    const Dispatch = useDispatch();
+
 
     useEffect(() => {
         locationName();
-    }, [location]);
+    }, [location, datasetId]);
 
     const locationName = () => {
         switch (location.pathname) {
             case `/user`:
                 return setName('User')
-            case `/dashBoard`:
+            case `/dashboard`:
                 return setName('Dashboard')
             case `/uploadData`:
                 return setName('Upload Data')
@@ -64,6 +73,8 @@ export function DefaultLayout({ children }: AppSidebarProps) {
     const signOut = useCallback(() => {
         logout();
     }, [])
+
+    console.log(datasetId, "datset", sessionStorage.getItem("datasetId"))
 
     return (
         <SidebarProvider>
@@ -137,7 +148,13 @@ export function DefaultLayout({ children }: AppSidebarProps) {
                         <Separator orientation="vertical" className="mr-2 h-full bg-[#727272]" />
                         {name}
                     </div>
-                    <Link to={"/uploadData"} className="text-blue-500 hover:underline">Upload CSV</Link>
+                    {datasetId != null ? (
+                        <Button className="text-blue-500" onClick={() => Dispatch(clearDataset())}>Change Dataset</Button>
+                    ) : (
+                        <Link to="/uploadData" className="text-blue-500">
+                            Upload CSV
+                        </Link>
+                    )}
                 </header>
 
                 <div className="flex-1 flex flex-col">{children}</div>

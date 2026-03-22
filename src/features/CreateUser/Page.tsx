@@ -1,12 +1,14 @@
 import { useForm } from "react-hook-form";
+ 
 
 type FormData = {
-  username: string;
+  userName: string;
   password: string;
   role: string;
 };
 
 export default function CreateUser() {
+  const API_URL = import.meta.env.VITE_API_URL;
   const {
     register,
     handleSubmit,
@@ -15,7 +17,7 @@ export default function CreateUser() {
   } = useForm<FormData>();
 
   const onSubmit = async (data: FormData) => {
-    const res = await fetch("http://localhost:8000/create-user", {
+    const res = await fetch(`http://${API_URL}/api/v1/users`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -45,13 +47,13 @@ export default function CreateUser() {
               Username
             </label>
             <input
-              {...register("username", { required: "Username is required" })}
+              {...register("userName", { required: "Username is required" })}
               className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
               placeholder="Enter username"
             />
-            {errors.username && (
+            {errors.userName && (
               <p className="text-red-500 text-sm">
-                {errors.username.message}
+                {errors.userName.message}
               </p>
             )}
           </div>

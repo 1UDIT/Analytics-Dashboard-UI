@@ -1,14 +1,17 @@
 type UploadPayload = {
   file: File;
   userName: string;
+  role: string;
 };
 
-export const uploadFile = async ({file, userName}: UploadPayload) => {
+export const uploadFile = async ({file, userName, role}: UploadPayload) => {
+  const API_URL = import.meta.env.VITE_API_URL;
   const formData = new FormData();
   formData.append("file", file);
   formData.append("username", userName);
+  formData.append("role", role);
 
-  const response = await fetch("http://localhost:8000/analytics/upload", {
+  const response = await fetch(`http://${API_URL}/api/v1/analytics/upload`, {
     method: "POST",
     body: formData,
   });
