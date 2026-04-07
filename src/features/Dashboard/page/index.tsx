@@ -47,7 +47,7 @@ export default function Index() {
       role: string;
     }) => {
       const res = await fetch(
-        `http://${API_URL}/api/v1/analytics/delete/${datasetId}?username=${username}&role=${role}`,
+        `${API_URL}/api/v1/analytics/delete/${datasetId}?username=${username}&role=${role}`,
         {
           method: "DELETE",
         }
@@ -71,7 +71,7 @@ export default function Index() {
     queryKey: ["dataFolder", userName, userRole],
     queryFn: ({ signal }) =>
       fetchData(
-        `http://${API_URL}/api/v1/auth/files?username=${userName}&role=${userRole}`,
+        `${API_URL}/api/v1/auth/files?username=${userName}&role=${userRole}`,
         "GET",
         undefined,
         signal
