@@ -5,7 +5,7 @@ type UploadPayload = {
 
 export const Auth = async ({ userName, password }: UploadPayload) => {
   const API_URL = import.meta.env.VITE_API_URL;
-  const response = await fetch(`http://${API_URL}/api/v1/auth`, {
+  const response = await fetch(`${API_URL}/api/v1/auth`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
