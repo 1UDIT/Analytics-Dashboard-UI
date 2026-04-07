@@ -93,7 +93,7 @@ export default function LoginPage() {
               <form className="space-y-4" onSubmit={handleSubmit(submit)}>
                 <input
                   type="text"
-                  placeholder="Enter your User Name"
+                  placeholder="Enter your User Name: admin"
                   {...register("userName", { required: "Username is required" })}
                   className="w-full rounded-full border border-slate-200  px-5 py-3 text-sm"
                 />
@@ -106,7 +106,7 @@ export default function LoginPage() {
 
                 <input
                   type="password"
-                  placeholder="Enter your Password"
+                  placeholder="Enter your Password: admin"
                   {...register("password", { required: "Password is required" })}
                   className="w-full rounded-full border border-slate-200 px-5 py-3 text-sm"
                 />
