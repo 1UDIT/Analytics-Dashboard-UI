@@ -29,7 +29,7 @@ export default function Index() {
     queryKey: ["dataset", datasetId],
     queryFn: async () => {
       const res = await fetch(
-        `http://${API_URL}/api/v1/analytics/data/${datasetId}`
+        `${API_URL}/api/v1/analytics/data/${datasetId}`
       );
       return res.json();
     },
