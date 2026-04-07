@@ -11,7 +11,7 @@ export const uploadFile = async ({file, userName, role}: UploadPayload) => {
   formData.append("username", userName);
   formData.append("role", role);
 
-  const response = await fetch(`http://${API_URL}/api/v1/analytics/upload`, {
+  const response = await fetch(`${API_URL}/api/v1/analytics/upload`, {
     method: "POST",
     body: formData,
   });
