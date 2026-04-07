@@ -17,7 +17,7 @@ export default function CreateUser() {
   } = useForm<FormData>();
 
   const onSubmit = async (data: FormData) => {
-    const res = await fetch(`http://${API_URL}/api/v1/users`, {
+    const res = await fetch(`${API_URL}/api/v1/users`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
